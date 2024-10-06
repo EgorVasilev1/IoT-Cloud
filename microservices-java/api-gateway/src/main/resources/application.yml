@@ -1,0 +1,45 @@
+server:
+  port: 8082
+  servlet:
+    application-display-name: gateway-service
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+          metadata:
+            response-timeout: 400
+            connect-timeout: 400
+
+security:
+  auth:
+    url: http://localhost:8083
+    introspect-api: /api/v1/auth/introspect
+
+ms:
+  auth:
+    root: http://localhost:8083
+
+
+#      default-filters:
+#        - name: RequestRateLimiter
+#          args:
+#            redis-rate-limiter.replenishRate: 10
+#            redis-rate-limiter.burstCapacity: 20
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8081/eureka/
+#
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
