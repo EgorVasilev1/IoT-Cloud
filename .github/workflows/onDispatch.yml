@@ -1,0 +1,22 @@
+name: "main-CI/CD"
+on: [workflow_dispatch]
+
+jobs:
+  deploy:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+        - name: Run in cloud
+          uses: favware/ssh-remote-action@v1
+          with:
+            host: ${{secrets.SSH_HOST}}
+            username: ${{secrets.SSH_USER}}
+            key: ${{secrets.SSH_PRIVATE_KEY}}
+            command: |
+              cd ${{ secrets.PROJECT_FOLDER }};
+              git checkout main;
+              git pull;
+              sudo docker compose --file docker-compose.yml down;
+              sudo docker compose --file docker-compose.yml up -d;
+              
