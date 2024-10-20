@@ -1,3 +1,5 @@
 rootProject.name = 'microservices-java'
 
 includeBuild('eureka-server')
+includeBuild('api-gateway')
+includeBuild('auth-service')
