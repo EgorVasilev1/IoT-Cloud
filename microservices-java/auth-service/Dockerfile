@@ -1,11 +1,25 @@
-FROM openjdk:17-jdk-slim
-WORKDIR /auth_service
-COPY . .
+## Stage 1 : build with maven builder image
+FROM quay.io/quarkus/ubi-quarkus-graalvm-builder:22.3-java17 AS build
+COPY --chown=quarkus:quarkus gradlew /code/gradlew
+COPY --chown=quarkus:quarkus gradle /code/gradle
+COPY --chown=quarkus:quarkus build.gradle settings.gradle gradle.properties /code/
+COPY --chown=quarkus:quarkus src /code/src
+USER quarkus
+WORKDIR /code
+RUN ./gradlew build
+
+## Stage 2 : create the docker final image
+FROM registry.access.redhat.com/ubi8/openjdk-17:1.14
+
+ENV LANGUAGE='en_US:en'
+
+COPY --from=build /code/build/libs/*-runner.jar /deployments/quarkus-run.jar
+
 EXPOSE 8080
-ARG quarkus.datasource.jdbc.url=jdbc:postgresql://rc1a-bfu70ickst3dddjj.mdb.yandexcloud.net:6432,rc1b-f9lhyz1dv9xlf269.mdb.yandexcloud.net:6432,rc1b-kq6i0o1caufodow3.mdb.yandexcloud.net:6432/iotcloud_users?targ>ARG quarkus.datasource.jdbc.additional-jdbc-properties.sslrootcert=/auth_service/build/postgresql/root.crt
-ARG quarkus.datasource.jdbc.additional-jdbc-properties.sslrootcert=/auth_service/build/postgresql/root.crt
-RUN bash ./gradlew build
+USER 185
+ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
 
-
+ENTRYPOINT [ "/opt/jboss/container/java/run/run-java.sh" ]
 
 
