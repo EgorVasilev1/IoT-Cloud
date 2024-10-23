@@ -6,6 +6,7 @@ COPY --chown=quarkus:quarkus build.gradle settings.gradle gradle.properties /cod
 COPY --chown=quarkus:quarkus src /code/src
 
 WORKDIR /code
+RUN chmod +x gradlew
 RUN ./gradlew build
 
 ## Stage 2 : create the docker final image
