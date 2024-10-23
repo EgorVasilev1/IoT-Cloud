@@ -1,11 +1,11 @@
 ## Stage 1 : build with maven builder image
 FROM maven:3.6.3-openjdk-17-slim AS build
-COPY --chown=quarkus:quarkus gradlew /code/gradlew
-COPY --chown=quarkus:quarkus gradle /code/gradle
-COPY --chown=quarkus:quarkus build.gradle settings.gradle gradle.properties /code/
-COPY --chown=quarkus:quarkus src /code/src
+COPY --chown=quarkus:quarkus gradlew /auth_service/gradlew
+COPY --chown=quarkus:quarkus gradle /auth_service/gradle
+COPY --chown=quarkus:quarkus build.gradle settings.gradle gradle.properties /auth_service/
+COPY --chown=quarkus:quarkus src /auth_service/src
 
-WORKDIR /code
+WORKDIR /auth_service
 RUN chmod +x gradlew
 RUN ./gradlew build
 
@@ -14,7 +14,7 @@ FROM registry.access.redhat.com/ubi8/openjdk-17:1.14
 
 ENV LANGUAGE='en_US:en'
 
-COPY --from=build /code/build/libs/*-runner.jar /deployments/quarkus-run.jar
+COPY --from=build /auth_service/build/libs/*-runner.jar /deployments/quarkus-run.jar
 
 EXPOSE 8080
 USER 185
