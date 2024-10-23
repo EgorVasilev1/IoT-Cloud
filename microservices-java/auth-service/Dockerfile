@@ -4,7 +4,7 @@ COPY --chown=quarkus:quarkus gradlew /code/gradlew
 COPY --chown=quarkus:quarkus gradle /code/gradle
 COPY --chown=quarkus:quarkus build.gradle settings.gradle gradle.properties /code/
 COPY --chown=quarkus:quarkus src /code/src
-USER quarkus
+
 WORKDIR /code
 RUN ./gradlew build
 
