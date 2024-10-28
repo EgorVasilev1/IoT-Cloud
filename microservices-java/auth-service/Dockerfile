@@ -4,6 +4,7 @@ COPY --chown=quarkus:quarkus gradlew /auth_service/gradlew
 COPY --chown=quarkus:quarkus gradle /auth_service/gradle
 COPY --chown=quarkus:quarkus build.gradle settings.gradle gradle.properties /auth_service/
 COPY --chown=quarkus:quarkus src /auth_service/src
+COPY --chown=quarkus:quarkus /auth_service/postgresql/root.crt /auth_service/postgresql/root.crt 
 
 WORKDIR /auth_service
 RUN chmod +x gradlew
