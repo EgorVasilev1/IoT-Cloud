@@ -1,0 +1,19 @@
+name: "Clean Docker cache"
+on: [workflow_dispatch]
+
+jobs:
+  deploy:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+        - name: Cleaning cache 
+          uses: favware/ssh-remote-action@v1
+          with:
+            host: ${{secrets.SSH_HOST}}
+            username: ${{secrets.SSH_USER}}
+            key: ${{secrets.SSH_PRIVATE_KEY}}
+            command: |
+              cd ${{ secrets.PROJECT_FOLDER }};
+              sh misc/scripts/DockerClean.sh;
+              

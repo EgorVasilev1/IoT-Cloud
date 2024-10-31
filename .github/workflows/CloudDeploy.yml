@@ -1,4 +1,4 @@
-name: "main-CI/CD"
+name: "Deploy workflow"
 on: [workflow_dispatch]
 
 jobs:
@@ -17,6 +17,6 @@ jobs:
               cd ${{ secrets.PROJECT_FOLDER }};
               git checkout main;
               git pull;
-              sudo docker compose --file docker-compose.yml down;
-              sudo docker compose --file docker-compose.yml up -d;
+              sh misc/scripts/JavaBuildAll.sh;
+              sh misc/scripts/StartAll.sh;
               
